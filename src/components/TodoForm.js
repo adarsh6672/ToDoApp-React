@@ -1,11 +1,15 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 
-export const TodoForm = ({addTodo}) => {
+export const TodoForm = ({addTodo , cpy}) => {
     const [value, setValue] = useState("");
+    useEffect(()=>{
+      setValue(cpy)
+    },[cpy])
     const handleSubmit=e=>{
         e.preventDefault();
         addTodo(value)
         setValue("")
+        
     }
   return (
     <form className='TodoForm' onSubmit={handleSubmit}>

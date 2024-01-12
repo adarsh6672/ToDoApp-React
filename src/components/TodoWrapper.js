@@ -7,11 +7,17 @@ uuidv4();
 
 export const TodoWrapper = () => {
     const [todos , setTodos] = useState([])
+    const [cpy ,setCpy]=useState('');
+    
 
     const addTodo= todo =>{
-        setTodos([...todos,{id:uuidv4(),task:todo,
-        isEditing:false}])
-        console.log(todos)
+        if(todo!==''){
+            setTodos([{id:uuidv4(),task:todo,
+                isEditing:false},...todos])
+                
+                console.log(todos)
+        }
+       
     }
     const deleteTodo=id=>{
         setTodos(todos.filter(todo => todo.id!==id))
@@ -26,10 +32,20 @@ export const TodoWrapper = () => {
             ...todo, task ,isEditing: !todo.isEditing
         }: todo))
     }
+
+    const copyTodo=id=>{
+        const t=todos.filter(todo=> todo.id === id);
+        setCpy(t[0].task);
+        console.log(t[0].task)
+        
+        
+    }
+        
+    
   return (
     <div className='TodoWrapper'>
         <h1>Things To Do</h1>
-        <TodoForm addTodo={addTodo} />
+        <TodoForm addTodo={addTodo} cpy={cpy} />
 
         {todos.map((todo ,index)=>(
             todo.isEditing ? (
@@ -37,7 +53,8 @@ export const TodoWrapper = () => {
             ):(
                 <Todo task={todo} key={index}
             deleteTodo={deleteTodo}
-            editTodo={editTodo} />
+            editTodo={editTodo}
+            copyTodo={copyTodo} />
             )
             
         ))}
