@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import { TodoForm } from './TodoForm';
 import {v4 as uuidv4} from 'uuid';
 import { Todo } from './Todo';
@@ -8,14 +8,15 @@ uuidv4();
 export const TodoWrapper = () => {
     const [todos , setTodos] = useState([])
     const [cpy ,setCpy]=useState('');
+    const [ordr , setOrdr]= useState(true)
     
 
     const addTodo= todo =>{
         if(todo!==''){
-            setTodos([{id:uuidv4(),task:todo,
-                isEditing:false},...todos])
+            setTodos([...todos,{id:uuidv4(),task:todo,
+                isEditing:false,isCompleted:false}])
+            setOrdr(!ordr)
                 
-                console.log(todos)
         }
        
     }
@@ -37,8 +38,23 @@ export const TodoWrapper = () => {
         const t=todos.filter(todo=> todo.id === id);
         setCpy(t[0].task);
         console.log(t[0].task)
+    }
+
+    useEffect(()=>{
+        console.log(todos)
+        todos.sort((a,b)=>a.isCompleted-b.isCompleted)
+        setTodos([...todos])
+        console.log('useeffect called')
+    },[ordr])
+
+    const completeToggle=id=>{
+        setTodos(todos.map(todo=> todo.id === id ?{
+            ...todo , isCompleted:!todo.isCompleted
+        }:todo))
+        setOrdr(!ordr)
         
-        
+        // todos.sort((a,b)=>a.isCompleted-b.isCompleted)
+        console.log(todos)
     }
         
     
@@ -54,7 +70,8 @@ export const TodoWrapper = () => {
                 <Todo task={todo} key={index}
             deleteTodo={deleteTodo}
             editTodo={editTodo}
-            copyTodo={copyTodo} />
+            copyTodo={copyTodo}
+            completeToggle={completeToggle} />
             )
             
         ))}
